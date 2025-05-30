@@ -111,7 +111,7 @@
                 stations.forEach(stationName => {
                     const stationData = data.value.find(community => community.CommunityName === stationName);
                     if (stationData) {
-                        const rawAQHI = stationData.Aqhi;
+                        // const rawAQHI = stationData.Aqhi;
 			const rawAQHI = 14; // Hardcoded test value
                         const displayAQHI = validateAQHI(rawAQHI || "Not Available");
                         const displaycolor = getAQHIColor(rawAQHI || "Not Available");
