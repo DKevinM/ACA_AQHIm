@@ -145,14 +145,14 @@
                 } else {
                     // Three individual forecast cells
 			rowHTML += `
-			  <td style="background-color: ${getAQHIColor(ValidateAQHI(forecastToday))}">
-			    ${ValidateAQHI(forecastToday)}
+			  <td style="background-color: ${getAQHIColor(validateAQHI(forecastToday))}">
+			    ${validateAQHI(forecastToday)}
 			  </td>
-			  <td style="background-color: ${getAQHIColor(ValidateAQHI(forecastTonight))}">
-			    ${ValidateAQHI(forecastTonight)}
+			  <td style="background-color: ${getAQHIColor(validateAQHI(forecastTonight))}">
+			    ${validateAQHI(forecastTonight)}
 			  </td>
-			  <td style="background-color: ${getAQHIColor(ValidateAQHI(forecastTomorrow))}">
-			    ${ValidateAQHI(forecastTomorrow)}
+			  <td style="background-color: ${getAQHIColor(validateAQHI(forecastTomorrow))}">
+			    ${validateAQHI(forecastTomorrow)}
 			  </td>
 			`;
                 }
