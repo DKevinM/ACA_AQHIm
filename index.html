@@ -144,11 +144,17 @@
                     rowHTML += `<td colspan="3" style="text-align:center;">Forecast Unavailable</td>`;
                 } else {
                     // Three individual forecast cells
-                    rowHTML += `
-                        <td style="background-color: ${getAQHIColor(forecastToday)}">${forecastToday}</td>
-                        <td style="background-color: ${getAQHIColor(forecastTonight)}">${forecastTonight}</td>
-                        <td style="background-color: ${getAQHIColor(forecastTomorrow)}">${forecastTomorrow}</td>
-                    `;
+			rowHTML += `
+			  <td style="background-color: ${getAQHIColor(ValidateAQHI(forecastToday))}">
+			    ${ValidateAQHI(forecastToday)}
+			  </td>
+			  <td style="background-color: ${getAQHIColor(ValidateAQHI(forecastTonight))}">
+			    ${ValidateAQHI(forecastTonight)}
+			  </td>
+			  <td style="background-color: ${getAQHIColor(ValidateAQHI(forecastTomorrow))}">
+			    ${ValidateAQHI(forecastTomorrow)}
+			  </td>
+			`;
                 }
 
                 row.innerHTML = rowHTML;
