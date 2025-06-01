@@ -119,7 +119,7 @@
                         const displaycolor = getAQHIColor(rawAQHI || "Not Available");
                         
                         // const forecastToday = stationData.ForecastToday || "Forecast Unavailable";
-			const forecastToday = 15;
+			const forecastToday = validateAQHI(15 || "Not Available");
                         const forecastTonight = stationData.ForecastTonight || "Forecast Unavailable";
                         const forecastTomorrow = stationData.ForecastTomorrow || "Forecast Unavailable";
                         const readingDate = stationData.ReadingDate ? new Date(stationData.ReadingDate).toLocaleString() : "N/A";
