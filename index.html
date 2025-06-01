@@ -93,8 +93,10 @@
                 return "#fe0002"; // HEX code for AQHI 8
             } else if (aqhiNumeric === 9) {
                 return "#cc0001"; // HEX code for AQHI 9
-            } else if (aqhiNumeric >= 10) {
+            } else if (aqhiNumeric === 10) {
                 return "#9a0100"; // HEX code for AQHI 10
+	    } else if (aqhiNumeric > 10) {
+                return "#640100"; // HEX code for AQHI 10
             } else {
                 return "#D3D3D3"; // Default to gray for any unexpected values
             }
@@ -111,13 +113,13 @@
                 stations.forEach(stationName => {
                     const stationData = data.value.find(community => community.CommunityName === stationName);
                     if (stationData) {
-                        const rawAQHI = stationData.Aqhi;
-			// const rawAQHI = 14; // Hardcoded test value
+                        // const rawAQHI = stationData.Aqhi;
+			const rawAQHI = 14; // Hardcoded test value
                         const displayAQHI = validateAQHI(rawAQHI || "Not Available");
                         const displaycolor = getAQHIColor(rawAQHI || "Not Available");
                         
-                        const forecastToday = stationData.ForecastToday || "Forecast Unavailable";
-			// const forecastToday = 15;
+                        // const forecastToday = stationData.ForecastToday || "Forecast Unavailable";
+			const forecastToday = 15;
                         const forecastTonight = stationData.ForecastTonight || "Forecast Unavailable";
                         const forecastTomorrow = stationData.ForecastTomorrow || "Forecast Unavailable";
                         const readingDate = stationData.ReadingDate ? new Date(stationData.ReadingDate).toLocaleString() : "N/A";
