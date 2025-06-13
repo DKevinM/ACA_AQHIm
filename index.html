@@ -63,6 +63,10 @@
                 <!-- Rows will be inserted dynamically -->
             </tbody>
         </table>
+	    	  <footer style="margin-top:20px; font-size: 13px; text-align: center;">
+		    <p><sup>1</sup> Monitored by industry, not validated by ACA</p>
+		    <p><sup>2</sup> Monitored by AEPA, not validated by ACA</p>
+		  </footer>
         <img src="aep-aqhi-scale.png" style="width: 350px;">
     </div>
     
@@ -102,76 +106,82 @@
             }
         }
 
-        async function fetchAQHI() {
-            const url = "https://data.environment.alberta.ca/EdwServices/aqhi/odata/CommunityAqhis?$format=json";
-            const stations = ["Edmonton", "Strathcona County", "St. Albert", "Enoch", "Leduc (Sensor)"];
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const tableBody = document.getElementById('aqhiTableBody');
+async function fetchAQHI() {
+    const url = "https://data.environment.alberta.ca/EdwServices/aqhi/odata/CommunityAqhis?$format=json";
+    const stations = ["Edmonton", "Strathcona County", "St. Albert", "Enoch", "Leduc (Sensor)"];
 
-                stations.forEach(stationName => {
-                    const stationData = data.value.find(community => community.CommunityName === stationName);
-                    if (stationData) {
-                        const rawAQHI = stationData.Aqhi;
-			// const rawAQHI = 14; // Hardcoded test value
-	                        const displayAQHI = validateAQHI(rawAQHI || "Not Available");
-	                        const displaycolor = getAQHIColor(rawAQHI || "Not Available");
-                        
-                        const forecastToday_raw = stationData.ForecastToday || "Forecast Unavailable";
-			// const forecastToday_raw = 14;
-				const displayAQHI_1 = validateAQHI(forecastToday_raw || "Not Available");
-	                        const displaycolor_1 = getAQHIColor(forecastToday_raw || "Not Available");
-                        const forecastTonight_raw = stationData.ForecastTonight || "Forecast Unavailable";
-				const displayAQHI_2 = validateAQHI(forecastTonight_raw || "Not Available");
-	                        const displaycolor_2 = getAQHIColor(forecastTonight_raw || "Not Available");			    
-                        const forecastTomorrow_raw = stationData.ForecastTomorrow || "Forecast Unavailable";
-				const displayAQHI_3 = validateAQHI(forecastTomorrow_raw || "Not Available");
-	                        const displaycolor_3 = getAQHIColor(forecastTomorrow_raw || "Not Available");					    
-                        const readingDate = stationData.ReadingDate ? new Date(stationData.ReadingDate).toLocaleString() : "N/A";
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const tableBody = document.getElementById('aqhiTableBody');
+        tableBody.innerHTML = '';
 
-                        const allUnavailable = (
-                            forecastToday_raw === "Forecast Unavailable" &&
-                            forecastTonight_raw === "Forecast Unavailable" &&
-                            forecastTomorrow_raw === "Forecast Unavailable"
-                        );
-                        
-                        const row = document.createElement('tr');
+        stations.forEach(stationName => {
+            const stationData = data.value.find(community => community.CommunityName === stationName);
+            if (stationData) {
+                let displayName = stationName;
+                if (displayName === "Strathcona County") displayName += "<sup>1</sup>";
+                if (displayName.startsWith("Leduc")) displayName = "Leduc<sup>2</sup>";
 
-                // Start building the row
+                const rawAQHI = stationData.Aqhi;
+                const displayAQHI = validateAQHI(rawAQHI || "Not Available");
+                const displaycolor = getAQHIColor(rawAQHI || "Not Available");
+
+                const forecastToday_raw = stationData.ForecastToday || "Forecast Unavailable";
+                const displayAQHI_1 = validateAQHI(forecastToday_raw);
+                const displaycolor_1 = getAQHIColor(forecastToday_raw);
+
+                const forecastTonight_raw = stationData.ForecastTonight || "Forecast Unavailable";
+                const displayAQHI_2 = validateAQHI(forecastTonight_raw);
+                const displaycolor_2 = getAQHIColor(forecastTonight_raw);
+
+                const forecastTomorrow_raw = stationData.ForecastTomorrow || "Forecast Unavailable";
+                const displayAQHI_3 = validateAQHI(forecastTomorrow_raw);
+                const displaycolor_3 = getAQHIColor(forecastTomorrow_raw);
+
+                const readingDate = stationData.ReadingDate ? new Date(stationData.ReadingDate).toLocaleString() : "N/A";
+
+                const allUnavailable = (
+                    forecastToday_raw === "Forecast Unavailable" &&
+                    forecastTonight_raw === "Forecast Unavailable" &&
+                    forecastTomorrow_raw === "Forecast Unavailable"
+                );
+
+                const row = document.createElement('tr');
+
                 let rowHTML = `
-                    <td>${stationName}</td>
+                    <td>${displayName}</td>
                     <td style="background-color: ${displaycolor}">${displayAQHI}</td>
                     <td>${readingDate}</td>
                 `;
 
                 if (allUnavailable) {
-                    // One merged cell
                     rowHTML += `<td colspan="3" style="text-align:center;">Forecast Unavailable</td>`;
                 } else {
-                    // Three individual forecast cells
-			rowHTML += `
-			  <td style="background-color: ${displaycolor_1}">${displayAQHI_1}</td>
-			  <td style="background-color: ${displaycolor_2}">${displayAQHI_2}</td>
-			  <td style="background-color: ${displaycolor_3}">${displayAQHI_3}</td>
-			`;
+                    rowHTML += `
+                        <td style="background-color: ${displaycolor_1}">${displayAQHI_1}</td>
+                        <td style="background-color: ${displaycolor_2}">${displayAQHI_2}</td>
+                        <td style="background-color: ${displaycolor_3}">${displayAQHI_3}</td>
+                    `;
                 }
 
                 row.innerHTML = rowHTML;
                 tableBody.appendChild(row);
             } else {
-							
-                        console.warn(`No data found for station: ${stationName}`);
-                    }
-                });
-            } catch (error) {
-                console.error('Error fetching AQHI data:', error);
+                console.warn(`No data found for station: ${stationName}`);
             }
-        }
+        });
+
+    } catch (error) {
+        console.error('Error fetching AQHI data:', error);
+    }
+}
+
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchAQHI();
-        });
+            setInterval(fetchAQHI, 600000); // refresh every 10 minutes (600,000 ms)
+	});
     </script>
 </body>
 </html>
